@@ -74,7 +74,6 @@ function parseOffers(data) {
     }
 }
 
-
 function parseDate(date) {
     return new Date(date).toLocaleDateString("fr-FR", {
         day: "numeric",
@@ -86,7 +85,6 @@ function parseDate(date) {
 function cleanDescription(html) {
     if (!html) return "";
     
-    // Create a temporary container
     const temp = document.createElement("div");
     temp.innerHTML = html;
     temp.querySelectorAll("script, style").forEach(el => el.remove());
