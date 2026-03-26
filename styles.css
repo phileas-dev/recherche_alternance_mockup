@@ -1,0 +1,110 @@
+@font-face {
+    font-family: 'Google Sans Code';
+    src: url('/GoogleSansCode-VariableFont_wght.ttf');
+    font-display: swap;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Google Sans Code";
+    scrollbar-color: auto transparent;
+}
+
+
+body {
+    background-color: rgb(44, 44, 44);
+}
+
+header {
+    height: 50px;
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 40px;
+}
+
+#context {
+    field-sizing: content;
+}
+
+#target, #context, header button {
+    margin: 0 10px;
+}
+
+#resultCounter {
+    margin-top: 20px;
+    color: white;
+}
+
+.card {
+    margin: 10px;
+    padding: 20px;
+    background-color: rgb(211, 211, 211);
+    border: 2px solid black;
+    border-radius: 20px;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.card p {
+    align-items: center;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+i {
+    margin-right: 1ch;
+}
+
+.info {
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.info p, .info a {
+    color: rgb(73, 73, 73);
+}
+
+.info a:hover, h2:hover {
+    text-decoration: underline;
+}
+
+.card .desc {
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1;
+    min-height: 0;
+    scrollbar-color: auto transparent;
+}
+
+.card .desc::-webkit-scrollbar {
+    width: 8px;
+}
+
+.card .desc::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+.card .desc::-webkit-scrollbar-thumb {
+    background-color: rgb(80, 80, 80);
+    border-radius: 4px;
+}
+
+.card .desc::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(60, 60, 60);
+}
+
+main {
+    margin: 0 50px;
+}
+
+#offers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}

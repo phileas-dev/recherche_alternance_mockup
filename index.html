@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
+    <title>Alternance</title>
+</head>
+<body>
+    <header>
+        <div>
+            <button id="searchButton" onclick="fetchOffers()">Chercher</button>
+            <input id="target" type="text" value="Développeur" placeholder="Développeur">
+            <input id="context" type="text" value="Développement web ou applicatif, ou tout métier au coeur du développement informatique." placeholder="Développement web ou applicatif...">
+        </div>
+        <p id="resultCounter"></p>
+    </header>
+
+    <main>
+        <div id="offers"></div>
+    </main>
+
+    <script src="secrets.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

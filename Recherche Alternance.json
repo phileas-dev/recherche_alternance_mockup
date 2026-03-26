@@ -1,0 +1,872 @@
+{
+  "name": "Recherche Alternance",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "alternance",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2240,
+        288
+      ],
+      "id": "2125dcd9-8da1-4125-be25-146a0f560669",
+      "name": "Webhook",
+      "webhookId": "ac7c6a5e-66fa-4121-8e69-faac6c3d8c03"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "714c4f09-e516-4893-bb04-ad5e8e2d6024",
+              "name": "token",
+              "value": "={{ $json.headers.token }}",
+              "type": "string"
+            },
+            {
+              "id": "03bfcf63-1dc9-4bb6-a214-60c2963f9c2d",
+              "name": "city",
+              "value": "={{ $json.query.city }}",
+              "type": "string"
+            },
+            {
+              "id": "16b946a0-2517-4853-a5c8-2e7d2cde9003",
+              "name": "radius",
+              "value": "={{ $json.query.radius }}",
+              "type": "number"
+            },
+            {
+              "id": "0859b687-26e4-4eec-8f80-2ef1d4cad8d0",
+              "name": "target_diploma_level",
+              "value": "={{ $json.query.target_diploma_level }}",
+              "type": "string"
+            },
+            {
+              "id": "17740a7e-d1c1-46cf-9cda-767df52eba4b",
+              "name": "client_id",
+              "value": "={{ $json.headers.client_id }}",
+              "type": "string"
+            },
+            {
+              "id": "382aa19b-e6e5-4a4f-9487-6a6c4ffa6fb2",
+              "name": "client_secret",
+              "value": "={{ $json.headers.client_secret }}",
+              "type": "string"
+            },
+            {
+              "id": "211fdaab-cf37-4beb-a828-263c93d9cf2a",
+              "name": "target",
+              "value": "={{ $json.query.target }}",
+              "type": "string"
+            },
+            {
+              "id": "79a8a55e-5f14-459f-90a3-89ea9969b587",
+              "name": "context",
+              "value": "={{ $json.query.context }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2016,
+        288
+      ],
+      "id": "afcb1062-d102-4ec2-957a-b5b2d8c193ad",
+      "name": "Get Params"
+    },
+    {
+      "parameters": {
+        "url": "https://geocoding-api.open-meteo.com/v1/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $('Get Params').item.json.city }}"
+            },
+            {
+              "name": "count",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -672,
+        96
+      ],
+      "id": "728ff7b8-ea52-4b7d-a89f-8af5ec106eff",
+      "name": "Geocoding"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b02cdf63-b4b4-4a3b-bb6c-59926cadbed8",
+              "name": "city",
+              "value": "={{ $json.results[0].name }}",
+              "type": "string"
+            },
+            {
+              "id": "9ca9def4-a4ff-4ccc-a4f6-5b9048f2fa55",
+              "name": "lat",
+              "value": "={{ $json.results[0].latitude }}",
+              "type": "number"
+            },
+            {
+              "id": "2791dd67-8904-4768-9a86-b926e41b8031",
+              "name": "lon",
+              "value": "={{ $json.results[0].longitude }}",
+              "type": "number"
+            },
+            {
+              "id": "af6d165f-b575-4094-a5ac-8501982c7e74",
+              "name": "country",
+              "value": "={{ $json.results[0].country }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -448,
+        96
+      ],
+      "id": "1ad1044b-8103-4553-9720-471696537a12",
+      "name": "Target Location"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "362de252-8a3a-4169-9406-163235ba1426",
+              "leftValue": "={{ $json.country }}",
+              "rightValue": "France",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -224,
+        96
+      ],
+      "id": "7879b1d4-5c8a-44f0-8c80-d2189e1151bf",
+      "name": "Is City in France"
+    },
+    {
+      "parameters": {
+        "url": "https://api.apprentissage.beta.gouv.fr/api/job/v1/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "latitude",
+              "value": "={{ $json.lat }}"
+            },
+            {
+              "name": "longitude",
+              "value": "={{ $json.lon }}"
+            },
+            {
+              "name": "radius",
+              "value": "={{ $('Get Params').item.json.radius }}"
+            },
+            {
+              "name": "target_diploma_level",
+              "value": "={{ $('Get Params').item.json.target_diploma_level || 6}}"
+            },
+            {
+              "name": "romes",
+              "value": "={{ $('ROME Codes').item.json.romes.join(',') }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Get Params').item.json.token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c5b76730-04ca-40f3-a30e-8d393d711ca2",
+      "name": "Get Offers"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "73a64f09-fda0-4c88-827c-e6dea53f1f72",
+              "leftValue": "={{ $('Get Params').item.json.city }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "0b521ee2-1d26-43e0-9b85-36d83c39ebf1",
+              "leftValue": "={{ $('Get Params').item.json.radius }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -896,
+        192
+      ],
+      "id": "46875e66-796e-4d3d-aacf-6809341e358d",
+      "name": "Check if city chosen"
+    },
+    {
+      "parameters": {
+        "url": "https://api.apprentissage.beta.gouv.fr/api/job/v1/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "target_diploma_level",
+              "value": "={{ $('Get Params').item.json.target_diploma_level || 6}}"
+            },
+            {
+              "name": "romes",
+              "value": "={{ $('ROME Codes').item.json.romes.join(',') }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Get Params').item.json.token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        0,
+        384
+      ],
+      "id": "fabb0637-1632-4c5f-8eca-dc5de33b63e5",
+      "name": "Get Offers (Any Location)"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "jobs",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        224,
+        192
+      ],
+      "id": "23f3fa6d-1a0d-43f9-86ef-3704bd12eab7",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.francetravail.io/partenaire/romeo/v2/predictionMetiers",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.access_token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"appellations\": [\n    {\n      \"intitule\": \"{{ $('Get Params').item.json.target }}\",\n      \"identifiant\": \"1\",\n      \"contexte\": \"{{ $('Get Params').item.json.context }}\"\n    }\n  ],\n  \"options\": {\n    \"nomAppelant\": \"francetravail\",\n    \"nbResultats\": 25,\n    \"seuilScorePrediction\": 0.7\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1344,
+        192
+      ],
+      "id": "eca8e36e-5e5b-4c57-a643-95a3a3565e66",
+      "name": "Call ROMEO for ROME prediction"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://entreprise.francetravail.fr/connexion/oauth2/access_token",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "realm",
+              "value": "/partenaire"
+            },
+            {
+              "name": "client_id",
+              "value": "={{ $json.client_id }}"
+            },
+            {
+              "name": "client_secret",
+              "value": "={{ $json.client_secret }}"
+            },
+            {
+              "name": "grant_type",
+              "value": "client_credentials"
+            },
+            {
+              "name": "scope",
+              "value": "api_romeov2"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1568,
+        192
+      ],
+      "id": "e4c6a945-8643-41a2-8303-17e20677aa67",
+      "name": "Get FranceTravail Access Token"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b07dbeba-6330-447e-9317-4d97bfcf1144",
+              "name": "romes",
+              "value": "={{ [...new Set($json.metiersRome.map(r => r[\"codeRome\"]))] }}",
+              "type": "array"
+            },
+            {
+              "id": "71c78c78-b8e6-4d1c-a475-c99c54e3880d",
+              "name": "labels",
+              "value": "={{ [...new Set($json.metiersRome.map(r => r[\"libelleRome\"]))] }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1120,
+        192
+      ],
+      "id": "5477bb47-43ff-4d86-aef3-a1a16e16cf6a",
+      "name": "ROME Codes"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1240cf2b-8578-4c37-a9dc-1d500da575e7",
+              "name": "url",
+              "value": "={{ $json.apply.url }}",
+              "type": "string"
+            },
+            {
+              "id": "8f169424-e1a4-4d6a-ac18-46487ad65d08",
+              "name": "info.title",
+              "value": "={{ $json.offer.title }}",
+              "type": "string"
+            },
+            {
+              "id": "89353abe-2de5-417c-a34b-ce03dbb0ba02",
+              "name": "info.rome_codes",
+              "value": "={{ $json.offer.rome_codes }}",
+              "type": "string"
+            },
+            {
+              "id": "31898ab0-432f-4017-8a12-8049c9e1c400",
+              "name": "info.description",
+              "value": "={{ $json.offer.description }}",
+              "type": "string"
+            },
+            {
+              "id": "5999ad03-57ac-4e2d-9576-52ae1a4060a6",
+              "name": "access.conditions",
+              "value": "={{ $json.offer.access_conditions }}",
+              "type": "array"
+            },
+            {
+              "id": "c8e711c6-1701-4642-9aa1-e49abcab6e05",
+              "name": "access.level",
+              "value": "={{ $json.offer.target_diploma.european }}",
+              "type": "string"
+            },
+            {
+              "id": "84fe83e2-cdcb-47ca-a0d2-a6de70a08c01",
+              "name": "access.label",
+              "value": "={{ $json.offer.target_diploma.label }}",
+              "type": "string"
+            },
+            {
+              "id": "2e6772e7-91c5-4866-8b4a-8efda40b2433",
+              "name": "skills.desired",
+              "value": "={{ $json.offer.desired_skills }}",
+              "type": "array"
+            },
+            {
+              "id": "0b9919c9-2f79-4dec-a8c2-71a1e042fb11",
+              "name": "skills.to_be_acquired",
+              "value": "={{ $json.offer.to_be_acquired_skills }}",
+              "type": "array"
+            },
+            {
+              "id": "10f56c37-8090-4c61-a7b4-ee68f9dfee59",
+              "name": "publication.creation",
+              "value": "={{ $json.offer.publication.creation }}",
+              "type": "string"
+            },
+            {
+              "id": "c797505c-2cdd-47c6-a3c6-9f419db8f45e",
+              "name": "publication.expiration",
+              "value": "={{ $json.offer.publication.expiration }}",
+              "type": "string"
+            },
+            {
+              "id": "56bd9f0e-aadd-438e-aa99-bc57e3b9dcf2",
+              "name": "workplace.name",
+              "value": "={{ $json.workplace.name ?? $json.workplace.legal_name }}",
+              "type": "string"
+            },
+            {
+              "id": "2ad06302-8fdd-4e94-b9bc-9f85e11560a0",
+              "name": "workplace.siret",
+              "value": "={{ $json.workplace.siret }}",
+              "type": "string"
+            },
+            {
+              "id": "ac8580d7-c425-44cc-b227-18370cd39a92",
+              "name": "workplace.phone",
+              "value": "={{ $json.apply.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "aa3b0798-377e-42b3-8acc-ecb8546cf89c",
+              "name": "workplace.address",
+              "value": "={{ $json.workplace.location.address }}",
+              "type": "string"
+            },
+            {
+              "id": "ca045625-3b5d-48a0-9ed3-3a1da15bc4cb",
+              "name": "contract.start",
+              "value": "={{ $json.contract.start }}",
+              "type": "string"
+            },
+            {
+              "id": "d7b6b25d-d7b2-44dc-aec9-5f0911608936",
+              "name": "contract.duration",
+              "value": "={{ $json.contract.duration }}",
+              "type": "number"
+            },
+            {
+              "id": "a046ae38-1d90-4b44-916e-b60906617044",
+              "name": "access.conditions",
+              "value": "={{ $json.offer.access_conditions }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        192
+      ],
+      "id": "704b69e8-ac54-40b6-ad6c-faa45abceddb",
+      "name": "Parse Offer Data"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"error\": \"{{ $('Target Location').item.json.city }}, {{ $('Target Location').item.json.country }} is not in France.\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        192
+      ],
+      "id": "f86c28ef-34a0-4d19-8946-33be7d3a8704",
+      "name": "Throw Error"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        896,
+        192
+      ],
+      "id": "2c4fecd6-a2ec-4069-95d6-22a526bc3bc7",
+      "name": "Send Response"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1f8ace38-c30a-4da0-8cff-b9fd5a195160",
+              "leftValue": "={{ $json.token }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "566f2813-431b-45af-a235-a157b1a15e2b",
+              "leftValue": "={{ $json.client_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "c1751b7a-c5f5-4e26-8d27-46377eba6abb",
+              "leftValue": "={{ $json.client_secret }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "de6d9b7f-8d1f-44f3-a0c2-885cd0f3335c",
+              "leftValue": "={{ $json.target }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1792,
+        288
+      ],
+      "id": "847a657b-2826-49d2-bb2c-0e748365f5cf",
+      "name": "Ensure mandatory params exist"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"error\": \"One or more required headers or query parameters missing. Make sure to include the following:\\n - token (header): LaBonneAlternance API token\\n - client_id (header): FranceTravail OAuth2 Application ID\\n - client_secret (header): FranceTravail OAuth2 Application Secret\\n - target (param): The target job type described in a simple string.\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -1568,
+        384
+      ],
+      "id": "fe11ff3f-ee0f-424f-b37f-cf9095c8a63d",
+      "name": "Missing Required Params"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        672,
+        192
+      ],
+      "id": "bd4dc1dc-6907-4aff-a967-bd80f38533d0",
+      "name": "Aggregate"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get Params",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Params": {
+      "main": [
+        [
+          {
+            "node": "Ensure mandatory params exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Geocoding": {
+      "main": [
+        [
+          {
+            "node": "Target Location",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Target Location": {
+      "main": [
+        [
+          {
+            "node": "Is City in France",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is City in France": {
+      "main": [
+        [
+          {
+            "node": "Get Offers",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Throw Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Offers": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if city chosen": {
+      "main": [
+        [
+          {
+            "node": "Geocoding",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Offers (Any Location)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Offers (Any Location)": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Parse Offer Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call ROMEO for ROME prediction": {
+      "main": [
+        [
+          {
+            "node": "ROME Codes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get FranceTravail Access Token": {
+      "main": [
+        [
+          {
+            "node": "Call ROMEO for ROME prediction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ROME Codes": {
+      "main": [
+        [
+          {
+            "node": "Check if city chosen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Offer Data": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ensure mandatory params exist": {
+      "main": [
+        [
+          {
+            "node": "Get FranceTravail Access Token",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Missing Required Params",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Send Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e504575a-89d4-402e-99ea-a7c326caf9b0",
+  "meta": {
+    "instanceId": "f474e05c854514b6f6d9728d63eb46bd755717902e3664254c6b587d3fe9b7a5"
+  },
+  "id": "kykXiCS4c7Y1rfoN",
+  "tags": []
+}
