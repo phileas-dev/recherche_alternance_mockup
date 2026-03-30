@@ -14,7 +14,7 @@
         -2240,
         288
       ],
-      "id": "2125dcd9-8da1-4125-be25-146a0f560669",
+      "id": "bdcf0eed-be78-43a4-a246-5d5d7a55a86a",
       "name": "Webhook",
       "webhookId": "ac7c6a5e-66fa-4121-8e69-faac6c3d8c03"
     },
@@ -80,7 +80,7 @@
         -2016,
         288
       ],
-      "id": "afcb1062-d102-4ec2-957a-b5b2d8c193ad",
+      "id": "5124f079-515b-46b8-a3ae-6b37737b890b",
       "name": "Get Params"
     },
     {
@@ -107,7 +107,7 @@
         -672,
         96
       ],
-      "id": "728ff7b8-ea52-4b7d-a89f-8af5ec106eff",
+      "id": "f0d70541-984a-4642-bfea-314cbfc22907",
       "name": "Geocoding"
     },
     {
@@ -148,7 +148,7 @@
         -448,
         96
       ],
-      "id": "1ad1044b-8103-4553-9720-471696537a12",
+      "id": "9a95b741-633c-4575-b811-79fa249de393",
       "name": "Target Location"
     },
     {
@@ -181,7 +181,7 @@
         -224,
         96
       ],
-      "id": "7879b1d4-5c8a-44f0-8c80-d2189e1151bf",
+      "id": "38628975-d720-4f9f-b2d8-8bda89af24a5",
       "name": "Is City in France"
     },
     {
@@ -229,7 +229,7 @@
         0,
         0
       ],
-      "id": "c5b76730-04ca-40f3-a30e-8d393d711ca2",
+      "id": "487443b6-1bf9-4719-9dd2-e7585fdc5582",
       "name": "Get Offers"
     },
     {
@@ -273,7 +273,7 @@
         -896,
         192
       ],
-      "id": "46875e66-796e-4d3d-aacf-6809341e358d",
+      "id": "5f9555c7-bb91-4ccc-aff4-b2b4f683edb4",
       "name": "Check if city chosen"
     },
     {
@@ -309,7 +309,7 @@
         0,
         384
       ],
-      "id": "fabb0637-1632-4c5f-8eca-dc5de33b63e5",
+      "id": "20feabd3-c6e2-46e8-9110-6cb1f90911b9",
       "name": "Get Offers (Any Location)"
     },
     {
@@ -323,7 +323,7 @@
         224,
         192
       ],
-      "id": "23f3fa6d-1a0d-43f9-86ef-3704bd12eab7",
+      "id": "6ce75b52-70e6-49ca-a532-dc58f88cfa60",
       "name": "Split Out"
     },
     {
@@ -350,7 +350,7 @@
         -1344,
         192
       ],
-      "id": "eca8e36e-5e5b-4c57-a643-95a3a3565e66",
+      "id": "538f7626-c773-4313-a5ac-5045f231f1b7",
       "name": "Call ROMEO for ROME prediction"
     },
     {
@@ -390,7 +390,7 @@
         -1568,
         192
       ],
-      "id": "e4c6a945-8643-41a2-8303-17e20677aa67",
+      "id": "a48ab657-9f4e-4460-88b3-c5b640de2c58",
       "name": "Get FranceTravail Access Token"
     },
     {
@@ -419,7 +419,7 @@
         -1120,
         192
       ],
-      "id": "5477bb47-43ff-4d86-aef3-a1a16e16cf6a",
+      "id": "d8719117-bca0-48c1-a4d4-1617517b13e1",
       "name": "ROME Codes"
     },
     {
@@ -544,14 +544,16 @@
         448,
         192
       ],
-      "id": "704b69e8-ac54-40b6-ad6c-faa45abceddb",
+      "id": "8ac27d87-c981-43ae-a3ee-1857ef75bb10",
       "name": "Parse Offer Data"
     },
     {
       "parameters": {
         "respondWith": "json",
         "responseBody": "={\n  \"error\": \"{{ $('Target Location').item.json.city }}, {{ $('Target Location').item.json.country }} is not in France.\"\n}",
-        "options": {}
+        "options": {
+          "responseCode": 400
+        }
       },
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
@@ -559,7 +561,7 @@
         0,
         192
       ],
-      "id": "f86c28ef-34a0-4d19-8946-33be7d3a8704",
+      "id": "4e40c0f4-07b2-428c-badc-3d46efaecead",
       "name": "Throw Error"
     },
     {
@@ -572,7 +574,7 @@
         896,
         192
       ],
-      "id": "2c4fecd6-a2ec-4069-95d6-22a526bc3bc7",
+      "id": "519a51b4-888f-4036-a529-5d93711060b5",
       "name": "Send Response"
     },
     {
@@ -636,14 +638,16 @@
         -1792,
         288
       ],
-      "id": "847a657b-2826-49d2-bb2c-0e748365f5cf",
+      "id": "a0685e43-7129-4151-885a-20987197149d",
       "name": "Ensure mandatory params exist"
     },
     {
       "parameters": {
         "respondWith": "json",
         "responseBody": "{\n  \"error\": \"One or more required headers or query parameters missing. Make sure to include the following:\\n - token (header): LaBonneAlternance API token\\n - client_id (header): FranceTravail OAuth2 Application ID\\n - client_secret (header): FranceTravail OAuth2 Application Secret\\n - target (param): The target job type described in a simple string.\"\n}",
-        "options": {}
+        "options": {
+          "responseCode": 422
+        }
       },
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
@@ -651,7 +655,7 @@
         -1568,
         384
       ],
-      "id": "fe11ff3f-ee0f-424f-b37f-cf9095c8a63d",
+      "id": "8b3bc062-eb0d-461e-9c86-b852d612a84d",
       "name": "Missing Required Params"
     },
     {
@@ -665,7 +669,7 @@
         672,
         192
       ],
-      "id": "bd4dc1dc-6907-4aff-a967-bd80f38533d0",
+      "id": "4192b9cf-58cd-415b-ab6e-1e52875368f0",
       "name": "Aggregate"
     }
   ],
@@ -858,15 +862,15 @@
       ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "e504575a-89d4-402e-99ea-a7c326caf9b0",
+  "versionId": "5ef2ac65-6628-4d24-b9ac-897ee041a454",
   "meta": {
     "instanceId": "f474e05c854514b6f6d9728d63eb46bd755717902e3664254c6b587d3fe9b7a5"
   },
-  "id": "kykXiCS4c7Y1rfoN",
+  "id": "PV8mPonmAfjMf0vJ",
   "tags": []
 }
