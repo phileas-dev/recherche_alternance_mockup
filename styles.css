@@ -46,6 +46,11 @@ header {
     height: 300px;
     display: flex;
     flex-direction: column;
+    transition: background-color 0.3s ease;
+}
+
+.card.visited {
+    background-color: rgb(180, 180, 180);
 }
 
 .card p {align-items: center;}

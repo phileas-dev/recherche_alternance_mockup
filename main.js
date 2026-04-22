@@ -4,13 +4,55 @@ const searchButton = document.getElementById("searchButton");
 const resultCounter = document.getElementById("resultCounter");
 const offers = document.getElementById("offers");
 
+const STORAGE_KEY = 'alternance_offers';
+
 class Offer {
   constructor(offer) {
     Object.assign(this, offer);
+    if (offer.visited === undefined || offer.visited === null) {
+      this.visited = false;
+    }
   }
 }
 
-var currentOffers = []
+var currentOffers = [];
+
+
+function loadOffersFromStorage() {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+            const data = JSON.parse(stored);
+            currentOffers = data.map(o => {
+                const offer = new Offer(o);
+                offer.visited = o.visited || false;
+                return offer;
+            });
+            renderOffers();
+            console.log(`Loaded ${currentOffers.length} offers from storage`);
+        }
+    } catch (e) {
+        console.error("Failed to load offers from storage:", e);
+    }
+}
+
+function saveOffersToStorage() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(currentOffers));
+    } catch (e) {
+        console.error("Failed to save offers to storage:", e);
+    }
+}
+
+function markOfferVisited(url) {
+    const offer = currentOffers.find(o => o.url === url);
+    if (offer) {
+        offer.visited = true;
+        saveOffersToStorage();
+    }
+}
+
+loadOffersFromStorage();
 
 async function fetchOffers() {
     searchButton.disabled = true;
@@ -45,11 +87,16 @@ function parseOffers(data) {
         }
         currentOffers.push(offer);
     }
-    resultCounter.textContent = `${currentOffers.length} offres`;
     currentOffers.sort((b, a) => {
         return new Date(a.contract.start) - new Date(b.contract.start);
     });
 
+    saveOffersToStorage();
+    renderOffers();
+}
+
+function renderOffers() {
+    resultCounter.textContent = `${currentOffers.length} offres`;
     offers.innerHTML = "";
     for (const offer of currentOffers) {
         displayOffer(offer);
@@ -83,7 +130,7 @@ function getRelativeTime(dateStr) {
 
 function displayOffer(offer) {
     const card = document.createElement("div");
-    card.className = "card";
+    card.className = "card" + (offer.visited ? " visited" : "");
     const phone_nb = offer.workplace.phone;
     const phone_display = phone_nb ? phone_nb.replace(new RegExp(`.{2}`, 'g'), '$&' + ' ').slice(0, -1) : "";
     const conditions = (offer.access?.conditions?.length > 0) ? offer.access.conditions.join(", ") : (offer.access?.label ?? "");
@@ -98,6 +145,12 @@ function displayOffer(offer) {
         </div>
         <p class="expiry"><i class="ph ph-hourglass-low"></i>${getRelativeTime(offer.publication.expiration)}</p>`;
     offers.appendChild(card);
+    
+    const titleLink = card.querySelector('.title a');
+    titleLink.addEventListener('click', () => {
+        markOfferVisited(offer.url);
+        card.classList.add('visited');
+    });
     
     const title = card.querySelector('.title');
     const maxHeight = 70;
