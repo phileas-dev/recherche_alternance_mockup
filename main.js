@@ -10,24 +10,6 @@ class Offer {
   }
 }
 
-// const baseUrl = 'http://localhost:5678/webhook-test/alternance';
-// const headers = new Headers({
-//     token: token,
-//     client_id: client_id,
-//     client_secret: client_secret
-// });
-// const params = new URLSearchParams({
-//     target: target.value,
-//     context: context.value,
-//     target_diploma_level: 6
-// });
-// const requestOptions = {method: "POST", headers: headers, body: "", redirect: "follow"};
-
-// fetch(`${baseUrl}?${params}`, requestOptions)
-// .then((response) => response.json())
-// .then((result) => parseOffers(result["data"]))
-// .catch((error) => console.error(error));
-
 var currentOffers = []
 
 async function fetchOffers() {
@@ -82,34 +64,21 @@ function parseDate(date) {
     });
 }
 
-function cleanDescription(html) {
-    if (!html) return "";
+function getRelativeTime(dateStr) {
+    const now = new Date();
+    const target = new Date(dateStr);
+
+    const diffMs = target - now;
+    if (diffMs <= 0) {return "Expirée";}
+
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    if (diffDays < 30) {return `${diffDays} jour${diffDays !== 1 ? 's' : ''}`;}
     
-    const temp = document.createElement("div");
-    temp.innerHTML = html;
-    temp.querySelectorAll("script, style").forEach(el => el.remove());
-    temp.querySelectorAll("li").forEach(li => {
-        const text = li.textContent;
-        const p = document.createElement("p");
-        p.textContent = "• " + text;
-        li.replaceWith(p);
-    });
-    temp.querySelectorAll("ul, ol").forEach(list => {
-        while (list.firstChild) {
-            list.parentNode.insertBefore(list.firstChild, list);
-        }
-        list.remove();
-    });
-    let cleaned = temp.innerHTML;
-    cleaned = cleaned.replace(/<\/[^>]+>/g, (match) => {
-        const tag = match.match(/<\/(\w+)>/)?.[1];
-        if (tag && !cleaned.includes(`<${tag}`)) {
-            return "";
-        }
-        return match;
-    });
+    const months = Math.floor(diffDays / 30);
+    const remainingDays = diffDays % 30;
+    if (remainingDays === 0) {return `${months} mois`;}
     
-    return cleaned;
+    return `${months} mois ${remainingDays} jour${remainingDays !== 1 ? 's' : ''}`;
 }
 
 function displayOffer(offer) {
@@ -117,17 +86,25 @@ function displayOffer(offer) {
     card.className = "card";
     const phone_nb = offer.workplace.phone;
     const phone_display = phone_nb ? phone_nb.replace(new RegExp(`.{2}`, 'g'), '$&' + ' ').slice(0, -1) : "";
-    const conditions = offer.access.conditions ?? offer.access.label
+    const conditions = (offer.access?.conditions?.length > 0) ? offer.access.conditions.join(", ") : (offer.access?.label ?? "");
 
     card.innerHTML = `
-        <h2><a target="_blank" href="${offer.url}">${offer.info.title}</a></h2>
+        <h2 class="title"><a target="_blank" href="${offer.url}">${offer.info.title}</a></h2>
         <div class="info">
-            <p><i class="ph ph-map-pin"></i><a target="_blank" href="https://www.google.com/maps/search/?api=1&query=${offer.workplace.address}">${offer.workplace.name ?? "UNKNOWN"} - ${offer.workplace.address}</a></p>
-            ${phone_nb ? `<p><i class="ph ph-phone"></i><a target="_blank" href="tel:+${phone_nb}">${phone_display}</a></p>` : ""}
-            ${conditions ? `<p><i class="ph ph-graduation-cap"></i>${conditions ?? ""}</p>` : ""}
-            <p><i class="ph ph-calendar-dots"></i>Commence le ${parseDate(offer.contract.start)} (${offer.contract.duration} mois) - Expire le ${parseDate(offer.publication.expiration)}</p>
+        <p class="dates"><i class="ph ph-calendar-dots"></i><b>${parseDate(offer.contract.start)}</b> (${offer.contract.duration} mois)</p>
+        <p class="workplace"><i class="ph ph-map-pin"></i><a target="_blank" href="https://www.google.com/maps/search/?api=1&query=${offer.workplace.address}">${offer.workplace.name ?? "UNKNOWN"} - ${offer.workplace.address}</a></p>
+            ${phone_nb ? `<p class="phone"><i class="ph ph-phone"></i><a target="_blank" href="tel:+${phone_nb}">${phone_display}</a></p>` : ""}
+            ${conditions ? `<p class="conditions"><i class="ph ph-graduation-cap"></i>${conditions ?? ""}</p>` : ""}
         </div>
-        <p class="desc">${cleanDescription(offer.info.description)}</p>`;
+        <p class="expiry"><i class="ph ph-hourglass-low"></i>${getRelativeTime(offer.publication.expiration)}</p>`;
     offers.appendChild(card);
-
+    
+    const title = card.querySelector('.title');
+    const maxHeight = 70;
+    let fontSize = 24;
+    title.style.fontSize = fontSize + 'px';
+    while (title.scrollHeight > maxHeight && fontSize > 10) {
+        fontSize--;
+        title.style.fontSize = fontSize + 'px';
+    }
 }

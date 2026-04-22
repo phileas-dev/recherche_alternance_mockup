@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Google Sans Code';
-    src: url('/GoogleSansCode-VariableFont_wght.ttf');
+    src: url('/GoogleSansCode.ttf');
     font-display: swap;
 }
 
@@ -12,9 +12,9 @@
 }
 
 
-body {
-    background-color: rgb(44, 44, 44);
-}
+body {background-color: rgb(44, 44, 44);}
+
+main {margin: 0 50px;}
 
 header {
     height: 50px;
@@ -25,17 +25,16 @@ header {
     padding: 20px 40px;
 }
 
-#context {
-    field-sizing: content;
-}
 
-#target, #context, header button {
-    margin: 0 10px;
-}
+#context {min-width: 200px; width: auto;}
+
+#target, #context, header button {margin: 0 10px;}
 
 #resultCounter {
     margin-top: 20px;
     color: white;
+    font-weight: bold;
+    font-size: 20px;
 }
 
 .card {
@@ -49,60 +48,58 @@ header {
     flex-direction: column;
 }
 
-.card p {
-    align-items: center;
-}
+.card p {align-items: center;}
 
 a {
     text-decoration: none;
     color: black;
 }
 
-i {
-    margin-right: 1ch;
-}
+i {margin-right: 1ch;}
 
 .info {
-    margin-bottom: 10px;
     font-size: 14px;
-}
-
-.info p, .info a {
-    color: rgb(73, 73, 73);
-}
-
-.info a:hover, h2:hover {
-    text-decoration: underline;
-}
-
-.card .desc {
-    overflow-y: auto;
-    overflow-x: hidden;
     flex: 1;
     min-height: 0;
-    scrollbar-color: auto transparent;
 }
 
-.card .desc::-webkit-scrollbar {
-    width: 8px;
-}
+.info .workplace, .info .workplace p, .info .workplace i, .info .workplace a {color: hsl(0, 18%, 33%);}
+.info .dates, .info .dates p, .info .dates i, .info .dates a {color: hsl(90, 18%, 33%);}
+.info .conditions, .info .conditions p, .info .conditions i, .info .conditions a {color: hsl(180, 18%, 33%);}
+.info .phone, .info .phone p, .info .phone i, .info .phone a {color: hsl(270, 18%, 33%);}
 
-.card .desc::-webkit-scrollbar-track {
-    background-color: transparent;
-}
-
-.card .desc::-webkit-scrollbar-thumb {
+.conditions::-webkit-scrollbar {width: 8px;}
+.conditions::-webkit-scrollbar-track {background-color: transparent;}
+.conditions::-webkit-scrollbar-thumb {
     background-color: rgb(80, 80, 80);
     border-radius: 4px;
 }
+.conditions::-webkit-scrollbar-thumb:hover {background-color: rgb(60, 60, 60);}
 
-.card .desc::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(60, 60, 60);
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-main {
-    margin: 0 50px;
+.info .conditions {
+    overflow-y: auto;
+    overflow-x: hidden;
 }
+
+.info p, .info a {color: rgb(73, 73, 73);}
+
+.info a:hover, h2:hover {text-decoration: underline;}
+
+.card .title {
+    max-height: 70px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-bottom: 20px;
+    scrollbar-color: auto transparent;
+}
+
+.expiry {font-size: 14px;}
 
 #offers {
     display: grid;
