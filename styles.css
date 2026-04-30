@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Google Sans Code';
-    src: url('/GoogleSansCode.ttf');
+    src: url('./GoogleSansCode.ttf');
     font-display: swap;
 }
 
