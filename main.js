@@ -71,9 +71,23 @@ async function fetchOffers() {
     const requestOptions = {method: "POST", headers: headers, body: "", redirect: "follow"};
 
     await fetch(`${baseUrl}?${params}`, requestOptions)
-    .then((response) => response.json())
-    .then((result) => parseOffers(result["data"]))
-    .catch((error) => console.error(error));
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+        }
+        return response.text();
+    })
+    .then((text) => {
+        if (!text) {
+            throw new Error("Empty response");
+        }
+        const result = JSON.parse(text);
+        parseOffers(result["data"]);
+    })
+    .catch((error) => {
+        console.error("Fetch error:", error);
+        alert("Erreur: " + error.message);
+    });
 
     searchButton.disabled = false;
 }
