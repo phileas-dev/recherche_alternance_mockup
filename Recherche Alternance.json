@@ -533,6 +533,12 @@
               "name": "access.conditions",
               "value": "={{ $json.offer.access_conditions }}",
               "type": "array"
+            },
+            {
+              "id": "16dce9ee-44b4-4521-bb28-4ef11072c226",
+              "name": "info.id",
+              "value": "={{ $json.identifier.id }}",
+              "type": "string"
             }
           ]
         },
@@ -862,12 +868,12 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "5ef2ac65-6628-4d24-b9ac-897ee041a454",
+  "versionId": "9075b352-7231-4c1a-828b-d9c1cc656b46",
   "meta": {
     "instanceId": "f474e05c854514b6f6d9728d63eb46bd755717902e3664254c6b587d3fe9b7a5"
   },

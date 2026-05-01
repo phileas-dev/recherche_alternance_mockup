@@ -15,3 +15,17 @@ To get a FranceTravail API that works with this project, navigate to https://fra
 To get a LaBonneAlternance API Token, navigate to https://api.apprentissage.beta.gouv.fr/fr. An account is required.
 
 With n8n running, simply open [index.html](/index.html) in your browser of choice, then you can search for offers with the given search fields. The latter are sent to the ROMEO API, which uses AI to find relevant ROME codes from the search query. Those codes are then used to find relevant offers, which are later parsed and filtered, and finally displayed in this simple HTML/CSS/JS frontend.
+
+## Expansions
+
+Some of the parsed data in the workflow is currently not used or displayed on the interface, namely:
+- Offer ID
+- Skills list
+- Offer Description (hard to clean up)
+
+The project could be expanded with this extra data to:
+- Preview offers in a dedicated frame (skills, description)
+- "Blacklist" offers by ID to sort through them easily
+- Filter offers by date, alphabetically, or by other requirements
+- Choose a random offer
+- Etc.
