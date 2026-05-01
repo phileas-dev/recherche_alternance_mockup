@@ -72,21 +72,19 @@ async function fetchOffers() {
 
     await fetch(`${baseUrl}?${params}`, requestOptions)
     .then((response) => {
-        if (!response.ok) {
-            throw new Error(`HTTP error: ${response.status}`);
-        }
+        if (!response.ok) {throw new Error(`HTTP error: ${response.status}`);}
         return response.text();
     })
     .then((text) => {
-        if (!text) {
-            throw new Error("Empty response");
-        }
+        if (!text) {throw new Error("Empty response");}
+        const bytes = new TextEncoder().encode(text).length / 1_000_000;
+        console.log("Response size:", bytes.toFixed(2), "MB");
         const result = JSON.parse(text);
         parseOffers(result["data"]);
     })
     .catch((error) => {
         console.error("Fetch error:", error);
-        alert("Erreur: " + error.message);
+        alert("Error: " + error.message);
     });
 
     searchButton.disabled = false;
